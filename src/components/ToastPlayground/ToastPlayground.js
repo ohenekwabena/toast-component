@@ -3,22 +3,28 @@ import React from "react";
 import Button from "../Button";
 
 import styles from "./ToastPlayground.module.css";
+import Toast from "../Toast/Toast";
 
 const VARIANT_OPTIONS = ["notice", "warning", "success", "error"];
 
 function ToastPlayground() {
   const [message, setMessage] = React.useState("");
   const [buttonVariant, setButtonVariant] = React.useState();
+  const [showToast, setShowToast] = React.useState(false);
 
-  console.log(buttonVariant);
+  function handleForm(event) {
+    event.preventDefault();
+    setShowToast(true);
+  }
+
   return (
     <div className={styles.wrapper}>
       <header>
         <img alt="Cute toast mascot" src="/toast.png" />
         <h1>Toast Playground</h1>
       </header>
-
-      <div className={styles.controlsWrapper}>
+      {showToast && <Toast icon={buttonVariant} message={message} setShowToast={setShowToast} />}
+      <form className={styles.controlsWrapper} onSubmit={handleForm}>
         <div className={styles.row}>
           <label htmlFor="message" className={styles.label} style={{ alignSelf: "baseline" }}>
             Message
@@ -59,7 +65,7 @@ function ToastPlayground() {
             <Button>Pop Toast!</Button>
           </div>
         </div>
-      </div>
+      </form>
     </div>
   );
 }
