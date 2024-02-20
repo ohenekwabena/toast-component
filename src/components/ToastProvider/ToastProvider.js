@@ -1,4 +1,5 @@
 import React from "react";
+import useEscapeKey from "../../hooks/use-keydown.hook";
 
 export const ToastContext = React.createContext([
   {
@@ -11,18 +12,11 @@ export const ToastContext = React.createContext([
 function ToastProvider({ children }) {
   const [toastInput, setToastInput] = React.useState([]);
 
-  React.useEffect(() => {
-    function handleKeyDown(event) {
-      if (event.code === "Escape") {
-        setToastInput([]);
-      }
-    }
-    window.addEventListener("keydown", handleKeyDown);
-
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
+  const handleEscape = React.useCallback(() => {
+    setToastInput([]);
   }, []);
+
+  useEscapeKey("Escape", handleEscape);
 
   function removeToast(id) {
     const newToastInput = toastInput.filter((toast) => toast.id != id);
