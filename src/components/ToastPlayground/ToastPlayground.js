@@ -3,18 +3,22 @@ import React from "react";
 import Button from "../Button";
 
 import styles from "./ToastPlayground.module.css";
-import Toast from "../Toast/Toast";
+import ToastShelf from "../ToastShelf/ToastShelf";
+import { ToastContext } from "../ToastProvider/ToastProvider";
 
 const VARIANT_OPTIONS = ["notice", "warning", "success", "error"];
 
 function ToastPlayground() {
+  const { createToast } = React.useContext(ToastContext);
   const [message, setMessage] = React.useState("");
-  const [buttonVariant, setButtonVariant] = React.useState();
-  const [showToast, setShowToast] = React.useState(false);
+  const [buttonVariant, setButtonVariant] = React.useState(VARIANT_OPTIONS[0]);
 
   function handleForm(event) {
     event.preventDefault();
-    setShowToast(true);
+
+    createToast(message, buttonVariant);
+    setButtonVariant(VARIANT_OPTIONS[0]);
+    setMessage("");
   }
 
   return (
@@ -23,7 +27,7 @@ function ToastPlayground() {
         <img alt="Cute toast mascot" src="/toast.png" />
         <h1>Toast Playground</h1>
       </header>
-      {showToast && <Toast icon={buttonVariant} message={message} setShowToast={setShowToast} />}
+      <ToastShelf />
       <form className={styles.controlsWrapper} onSubmit={handleForm}>
         <div className={styles.row}>
           <label htmlFor="message" className={styles.label} style={{ alignSelf: "baseline" }}>
@@ -50,8 +54,9 @@ function ToastPlayground() {
                   id={`variant-${variant}`}
                   type="radio"
                   name="variant"
-                  value={buttonVariant}
-                  onClick={() => setButtonVariant(variant)}
+                  value={variant}
+                  checked={buttonVariant === variant}
+                  onChange={() => setButtonVariant(variant)}
                 />
                 {variant}
               </label>
